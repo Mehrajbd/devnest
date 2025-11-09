@@ -39,16 +39,6 @@ export default function Header() {
           href="/" 
           className="group flex items-center gap-3 transition-all duration-300 hover:scale-105"
         >
-          <div className="relative w-10 h-10">
-            <Image
-              src="/Companylogo.jpeg"
-              alt="DevNest Logo"
-              width={40}
-              height={40}
-              className="object-contain transition-transform duration-300 group-hover:rotate-12"
-              priority
-            />
-          </div>
           <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             DevNest
           </h2>
