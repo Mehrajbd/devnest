@@ -24,7 +24,7 @@ const expertiseCards = [
   {
     title: 'Cybersecurity',
     description: 'Comprehensive security measures and protocols to protect your digital assets from threats and vulnerabilities.',
-    technologies: ['SSL/TLS', 'Firewalls', 'Encryption', 'Pen Testing'],
+    technologies: ['SSL/TLS', 'Firewalls', 'Encryption', 'Network & Server Pentesting', 'Web, API, and Mobile Application Pen Testing'],
     gradient: 'from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20',
     border: 'border-red-100 dark:border-red-800/30',
     bgCircle: 'bg-red-200 dark:bg-red-800/30',

@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-8">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              © 2024 DevNest. All rights reserved.
+              © 2024 SoftrevoX. All rights reserved.
             </p>
             
             <div className="flex items-center gap-6">

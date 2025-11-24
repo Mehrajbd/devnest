@@ -21,7 +21,7 @@ const projects = [
     title: 'Woo Commerce Website : Gosto Bari',
     description: 'GostoBari is an online fresh chicken delivery platform offering customizable chicken cuts exactly the way customers prefer. The website showcases premium-quality chicken selections—from whole skin-on birds to curry cuts—professionally chosen and delivered fresh to customers’ doorsteps.',
     image: '/Screenshot_1.png',
-    technologies: ['WordPress'],
+    technologies: ['WordPress','WooCommerce'],
     liveUrl: 'https://gostobari.com',
     caseStudyUrl: '#'
   },

@@ -11,7 +11,7 @@ export default function About() {
             <div className="flex flex-col gap-8">
               <div className="text-center">
                 <h1 className="text-4xl font-bold text-gray-900 dark:text-white md:text-5xl">
-                  About DevNest
+                  About SoftrevoX
                 </h1>
                 <p className="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                   We are a team of passionate developers dedicated to building exceptional digital experiences.

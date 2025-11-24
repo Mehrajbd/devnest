@@ -125,7 +125,7 @@ export default function Contact() {
                 
                 <div className="mt-6 flex flex-col gap-4">
                   <a 
-                    href="mailto:hello@devnest.com" 
+                    href="mailto:hello@softrevoX.com" 
                     className="group flex items-center gap-3"
                   >
                     <div className="flex size-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400">
@@ -136,7 +136,7 @@ export default function Contact() {
                     <div>
                       <p className="text-sm font-semibold text-gray-900 dark:text-white">Email</p>
                       <p className="text-sm text-gray-600 transition-colors group-hover:text-blue-600 dark:text-gray-400">
-                        hello@devnest.com
+                        hello@softrevoX.com
                       </p>
                     </div>
                   </a>
@@ -153,7 +153,7 @@ export default function Contact() {
                     <div>
                       <p className="text-sm font-semibold text-gray-900 dark:text-white">LinkedIn</p>
                       <p className="text-sm text-gray-600 transition-colors group-hover:text-blue-600 dark:text-gray-400">
-                        /company/devnest
+                        /company/softrevoX
                       </p>
                     </div>
                   </a>
@@ -170,7 +170,7 @@ export default function Contact() {
                     <div>
                       <p className="text-sm font-semibold text-gray-900 dark:text-white">GitHub</p>
                       <p className="text-sm text-gray-600 transition-colors group-hover:text-blue-600 dark:text-gray-400">
-                        /devnest
+                        /softrevoX
                       </p>
                     </div>
                   </a>

@@ -6,8 +6,8 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: 'DevNest - Your Partner with IT Solutions',
-  description: 'DevNest transforms ideas into powerful digital products with expertise in modern web technologies.',
+  title: 'SoftrevoX - Your Partner with IT Solutions',
+  description: 'SoftrevoX transforms ideas into powerful digital products with expertise in modern web technologies.',
 }
 
 export default function RootLayout({ children }) {
