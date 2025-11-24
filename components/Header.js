@@ -35,14 +35,23 @@ export default function Header() {
     }`}>
       <div className="container mx-auto flex h-20 max-w-7xl items-center justify-between px-4">
         {/* Logo with Animation */}
-        <Link 
-          href="/" 
-          className="group flex items-center gap-3 transition-all duration-300 hover:scale-105"
-        >
-          <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            DevNest
-          </h2>
-        </Link>
+     <Link 
+  href="/" 
+  className="group flex items-center gap-3 transition-all duration-300 hover:scale-105"
+>
+ <Image
+  src="/Soft.png"
+  alt="SoftrevoX Logo"
+  width={0}
+  height={0}
+  sizes="100vw"
+  className="w-12 h-auto rounded-md"
+/>
+
+  <h2 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+    SoftrevoX
+  </h2>
+</Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-8 md:flex">

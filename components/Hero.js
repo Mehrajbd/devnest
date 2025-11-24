@@ -271,8 +271,8 @@ export default function Hero() {
                             <div className="w-full h-full bg-gray-900 rounded-xl sm:rounded-2xl flex items-center justify-center">
                               <div className="relative w-full h-full transform group-hover/logo:scale-110 transition-transform duration-500 overflow-hidden rounded-xl sm:rounded-2xl">
                                 <Image
-                                  src="/Companylogo.jpeg"
-                                  alt="DevNest Logo"
+                                  src="/softvexo_logo.png"
+                                  alt="softvexoLogo"
                                   fill
                                   className="object-cover rounded-lg sm:rounded-xl"
                                   priority
