@@ -2,19 +2,32 @@ const projects = [
   {
     title: 'E-Commerce Platform',
     description: 'A full-featured online store with a custom CMS, built with Next.js, Node.js, and deployed on AWS for scalability.',
-    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
+    image: '/Screenshot_3.png',
     technologies: ['Next.js', 'Node.js', 'MongoDB', 'AWS'],
-    liveUrl: '#',
+    liveUrl: 'https://ecom-front-end-next.vercel.app',
     caseStudyUrl: '#'
   },
   {
-    title: 'Analytics Dashboard',
+    title: 'User Dashboard',
     description: 'A real-time data visualization tool for a SaaS company, using React, Python, and WebSocket for live updates.',
     image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80',
-    technologies: ['React', 'Python', 'WebSocket', 'D3.js'],
-    liveUrl: '#',
+    technologies: ['React',  'WebSocket', 'D3.js'],
+    liveUrl: 'https://dashboard-application-using-react.vercel.app',
     caseStudyUrl: '#'
   },
+
+
+  {
+    title: 'Woo Commerce Website : Gosto Bari',
+    description: 'GostoBari is an online fresh chicken delivery platform offering customizable chicken cuts exactly the way customers prefer. The website showcases premium-quality chicken selections—from whole skin-on birds to curry cuts—professionally chosen and delivered fresh to customers’ doorsteps.',
+    image: '/Screenshot_1.png',
+    technologies: ['WordPress'],
+    liveUrl: 'https://gostobari.com',
+    caseStudyUrl: '#'
+  },
+
+
+
   {
     title: 'SaaS Application',
     description: 'A multi-tenant SaaS application with focus on scalability and security, deployed on cloud infrastructure.',
