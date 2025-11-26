@@ -1,7 +1,7 @@
 // components/Testimonials.js
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Image from 'next/image';
 
 export default function Testimonials() {

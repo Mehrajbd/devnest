@@ -1,7 +1,7 @@
 // components/Hero.js - Premium Redesign with Company Logo
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 

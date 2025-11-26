@@ -1,7 +1,6 @@
 // components/WhyChooseUsEnhanced.js
 'use client';
-
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 export default function WhyChooseUsEnhanced() {
   const [isVisible, setIsVisible] = useState(false);
