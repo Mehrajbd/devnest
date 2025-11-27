@@ -1,7 +1,7 @@
+// components/Contact.js - Fixed Google Maps Integration
 'use client';
 
-import { useState } from 'react';
-
+import { useState, useEffect } from 'react';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -12,6 +12,162 @@ export default function Contact() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapError, setMapError] = useState(false);
+
+  useEffect(() => {
+    // Load Google Maps script
+    const loadGoogleMaps = () => {
+      // Check if script is already loaded
+      if (window.google && window.google.maps) {
+        setMapLoaded(true);
+        return;
+      }
+
+      // Check if script is already being loaded
+      if (document.querySelector('script[src*="maps.googleapis.com"]')) {
+        const checkLoaded = setInterval(() => {
+          if (window.google && window.google.maps) {
+            setMapLoaded(true);
+            clearInterval(checkLoaded);
+          }
+        }, 100);
+        return;
+      }
+
+      const script = document.createElement('script');
+      // Using a free API key (replace with your own for production)
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBFw0Qbyq9zTFTd-tUY6TZQgfUUlOV14-E&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        setMapLoaded(true);
+        setMapError(false);
+      };
+      script.onerror = () => {
+        setMapError(true);
+        setMapLoaded(false);
+      };
+      document.head.appendChild(script);
+    };
+
+    loadGoogleMaps();
+  }, []);
+
+  useEffect(() => {
+    if (mapLoaded && !mapError) {
+      initializeMap();
+    }
+  }, [mapLoaded, mapError]);
+
+  const initializeMap = () => {
+    try {
+      const mapElement = document.getElementById('google-map');
+      if (!mapElement) return;
+
+      const mapOptions = {
+        center: { lat: 40.7580, lng: -73.9855 }, // Times Square coordinates
+        zoom: 15,
+        styles: [
+          {
+            "featureType": "all",
+            "elementType": "geometry",
+            "stylers": [{ "color": "#f5f5f5" }]
+          },
+          {
+            "featureType": "all",
+            "elementType": "labels.text.fill",
+            "stylers": [{ "gamma": 0.01 }, { "lightness": 20 }]
+          },
+          {
+            "featureType": "all",
+            "elementType": "labels.text.stroke",
+            "stylers": [{ "saturation": -31 }, { "lightness": -33 }, { "weight": 2 }, { "gamma": 0.8 }]
+          },
+          {
+            "featureType": "all",
+            "elementType": "labels.icon",
+            "stylers": [{ "visibility": "off" }]
+          },
+          {
+            "featureType": "administrative",
+            "elementType": "geometry",
+            "stylers": [{ "color": "#fefefe" }]
+          },
+          {
+            "featureType": "landscape",
+            "elementType": "geometry",
+            "stylers": [{ "lightness": 30 }, { "saturation": 30 }, { "color": "#f0f0f0" }]
+          },
+          {
+            "featureType": "poi",
+            "elementType": "geometry",
+            "stylers": [{ "saturation": 20 }]
+          },
+          {
+            "featureType": "poi.park",
+            "elementType": "geometry",
+            "stylers": [{ "lightness": 20 }, { "saturation": -20 }]
+          },
+          {
+            "featureType": "road",
+            "elementType": "geometry",
+            "stylers": [{ "lightness": 10 }, { "saturation": -30 }]
+          },
+          {
+            "featureType": "road",
+            "elementType": "geometry.stroke",
+            "stylers": [{ "saturation": 25 }, { "lightness": 25 }]
+          },
+          {
+            "featureType": "water",
+            "elementType": "all",
+            "stylers": [{ "lightness": -20 }]
+          }
+        ],
+        disableDefaultUI: false,
+        zoomControl: true,
+        mapTypeControl: false,
+        scaleControl: true,
+        streetViewControl: false,
+        rotateControl: false,
+        fullscreenControl: true
+      };
+
+      const map = new window.google.maps.Map(mapElement, mapOptions);
+
+      // Add marker for office location
+      const marker = new window.google.maps.Marker({
+        position: { lat: 40.7580, lng: -73.9855 },
+        map: map,
+        title: 'SoftrevoX Office',
+        animation: window.google.maps.Animation.DROP,
+      });
+
+      // Add info window
+      const infoWindow = new window.google.maps.InfoWindow({
+        content: `
+          <div class="p-2 max-w-xs">
+            <h3 class="font-bold text-gray-900 text-sm">SoftrevoX Office</h3>
+            <p class="text-xs text-gray-600 mt-1">Times Square Area</p>
+            <p class="text-xs text-gray-600">New York, NY 10036</p>
+            <p class="text-xs text-blue-600 mt-2">📍 Near Broadway Theater</p>
+          </div>
+        `
+      });
+
+      marker.addListener('click', () => {
+        infoWindow.open(map, marker);
+      });
+
+      // Open info window by default
+      infoWindow.open(map, marker);
+
+    } catch (error) {
+      console.error('Error initializing Google Maps:', error);
+      setMapError(true);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -37,128 +193,70 @@ export default function Contact() {
   const openWhatsApp = () => {
     const message = "Hello SoftRevoX! I'm interested in your services.";
     const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/1234567890?text=${encodedMessage}`, '_blank');
+    window.open(`https://wa.me/8801533045910?text=${encodedMessage}`, '_blank');
   };
 
   // Call function
   const makeCall = () => {
-    window.open('tel:+1234567890', '_self');
+    window.open('tel:+8801533045910', '_self');
+  };
+
+  // Retry loading map
+  const retryMapLoad = () => {
+    setMapError(false);
+    setMapLoaded(false);
+    // Remove existing script
+    const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
+    if (existingScript) {
+      existingScript.remove();
+    }
+    // Reload
+    setTimeout(() => {
+      const script = document.createElement('script');
+      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyBFw0Qbyq9zTFTd-tUY6TZQgfUUlOV14-E&libraries=places`;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        setMapLoaded(true);
+        setMapError(false);
+      };
+      script.onerror = () => {
+        setMapError(true);
+        setMapLoaded(false);
+      };
+      document.head.appendChild(script);
+    }, 500);
   };
 
   return (
     <section className="py-16 bg-gray-50 dark:bg-gray-800" id="contact">
-      <div className="container mx-auto max-w-6xl px-4">
+      <div className="container mx-auto max-w-7xl px-4">
         <div className="flex flex-col gap-12">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white md:text-4xl">
-              Let's Build Something Together
-            </h2>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white md:text-4xl">
+              Get In Touch
+            </h1>
             <p className="mt-4 text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
               Have a project in mind or just want to connect? Drop us a message below, and we'll get back to you as soon as possible.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-5 md:gap-8">
-            {/* Contact Form */}
-            <div className="col-span-1 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900 md:col-span-3 md:p-8">
-              <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                  <label className="flex flex-col">
-                    <span className="pb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Full Name
-                    </span>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      placeholder="e.g., John Doe"
-                      className="h-11 w-full rounded-lg border border-gray-300 bg-white p-3 text-sm font-normal leading-normal text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-0 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500"
-                      required
-                    />
-                  </label>
-                  
-                  <label className="flex flex-col">
-                    <span className="pb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                      Email Address
-                    </span>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder="e.g., john.doe@example.com"
-                      className="h-11 w-full rounded-lg border border-gray-300 bg-white p-3 text-sm font-normal leading-normal text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-0 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500"
-                      required
-                    />
-                  </label>
-                </div>
-                
-                <label className="flex flex-col">
-                  <span className="pb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Subject
-                  </span>
-                  <input
-                    type="text"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    placeholder="e.g., Project Inquiry"
-                    className="h-11 w-full rounded-lg border border-gray-300 bg-white p-3 text-sm font-normal leading-normal text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-0 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500"
-                    required
-                  />
-                </label>
-                
-                <label className="flex flex-col">
-                  <span className="pb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Message
-                  </span>
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="Tell us about your project or idea..."
-                    rows="6"
-                    className="w-full resize-y rounded-lg border border-gray-300 bg-white p-3 text-sm font-normal leading-normal text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-0 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500"
-                    required
-                  />
-                </label>
-                
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`flex h-11 w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg px-6 text-sm font-bold text-white transition-all duration-300 sm:w-auto sm:self-end ${
-                    isSubmitting 
-                      ? 'bg-gray-400 cursor-not-allowed' 
-                      : 'bg-blue-600 hover:bg-blue-700 transform hover:scale-105'
-                  }`}
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Sending...
-                    </div>
-                  ) : (
-                    'Send Message'
-                  )}
-                </button>
-              </form>
-            </div>
-            
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
             {/* Contact Information */}
-            <div className="col-span-1 flex flex-col gap-6 md:col-span-2">
+            <div className="lg:col-span-1 space-y-6">
+              {/* Contact Information Card */}
               <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
                   Contact Information
                 </h3>
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-400 mb-6">
                   Get in touch with us through any of these channels.
                 </p>
                 
-                <div className="mt-6 flex flex-col gap-4">
+                <div className="space-y-4">
                   {/* Email */}
                   <a 
-                    href="mailto:hello@softrevoX.com" 
+                    href="mailto:hello@softrevox.com" 
                     className="group flex items-center gap-3 p-3 rounded-lg transition-all duration-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                   >
                     <div className="flex size-12 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400 transition-all duration-300 group-hover:scale-110">
@@ -169,7 +267,7 @@ export default function Contact() {
                     <div>
                       <p className="text-sm font-semibold text-gray-900 dark:text-white">Email</p>
                       <p className="text-sm text-gray-600 transition-colors group-hover:text-blue-600 dark:text-gray-400">
-                        hello@softrevoX.com
+                        hello@softrevox.com
                       </p>
                     </div>
                   </a>
@@ -211,45 +309,54 @@ export default function Contact() {
                   </button>
                   
                   {/* Facebook */}
-<a 
-  href="https://www.facebook.com/softrevox" 
-  target="_blank"
-  rel="noopener noreferrer"
-  className="group flex items-center gap-3 p-3 rounded-lg transition-all duration-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
->
-  <div className="flex size-12 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400 transition-all duration-300 group-hover:scale-110">
-    <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
-    </svg>
-  </div>
-  <div>
-    <p className="text-sm font-semibold text-gray-900 dark:text-white">Facebook</p>
-    <p className="text-sm text-gray-600 transition-colors group-hover:text-blue-600 dark:text-gray-400">
-      /softrevoX
-    </p>
-  </div>
-</a>
-                  
-                  {/* GitHub */}
                   <a 
-                    href="#" 
-                    className="group flex items-center gap-3 p-3 rounded-lg transition-all duration-300 hover:bg-gray-50 dark:hover:bg-gray-700/20"
+                    href="https://www.facebook.com/softrevox" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex items-center gap-3 p-3 rounded-lg transition-all duration-300 hover:bg-blue-50 dark:hover:bg-blue-900/20"
                   >
-                    <div className="flex size-12 items-center justify-center rounded-lg bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400 transition-all duration-300 group-hover:scale-110">
+                    <div className="flex size-12 items-center justify-center rounded-lg bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400 transition-all duration-300 group-hover:scale-110">
                       <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path clipRule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.165 6.839 9.491.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.03 1.595 1.03 2.688 0 3.848-2.338 4.695-4.566 4.942.359.308.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" fillRule="evenodd" />
+                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                       </svg>
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-gray-900 dark:text-white">GitHub</p>
-                      <p className="text-sm text-gray-600 transition-colors group-hover:text-gray-600 dark:text-gray-400">
-                        /softrevoX
+                      <p className="text-sm font-semibold text-gray-900 dark:text-white">Facebook</p>
+                      <p className="text-sm text-gray-600 transition-colors group-hover:text-blue-600 dark:text-gray-400">
+                        /softrevox
                       </p>
                     </div>
                   </a>
                 </div>
               </div>
-              
+
+              {/* Office Hours */}
+              <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  Office Hours
+                </h3>
+                <div className="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                  <p className="flex justify-between">
+                    <span>Monday - Friday:</span>
+                    <span className="font-medium">9:00 AM - 6:00 PM</span>
+                  </p>
+                  <p className="flex justify-between">
+                    <span>Saturday:</span>
+                    <span className="font-medium">10:00 AM - 4:00 PM</span>
+                  </p>
+                  <p className="flex justify-between">
+                    <span>Sunday:</span>
+                    <span className="font-medium text-red-500">Closed</span>
+                  </p>
+                </div>
+                
+                <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                  <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                    💡 <strong>Pro Tip:</strong> For urgent matters, WhatsApp is the fastest way to reach us!
+                  </p>
+                </div>
+              </div>
+
               {/* Quick Action Buttons */}
               <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
                 <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
@@ -277,30 +384,146 @@ export default function Contact() {
                   </button>
                 </div>
               </div>
-              
+            </div>
+
+            {/* Contact Form & Map */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Contact Form */}
               <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
-                  Office Hours
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-6">
+                  Send us a Message
                 </h3>
-                <div className="mt-4 space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                  <p className="flex justify-between">
-                    <span>Monday - Friday:</span>
-                    <span className="font-medium">9:00 AM - 6:00 PM</span>
-                  </p>
-                  <p className="flex justify-between">
-                    <span>Saturday:</span>
-                    <span className="font-medium">10:00 AM - 4:00 PM</span>
-                  </p>
-                  <p className="flex justify-between">
-                    <span>Sunday:</span>
-                    <span className="font-medium text-red-500">Closed</span>
-                  </p>
+                <form className="flex flex-col gap-6" onSubmit={handleSubmit}>
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <label className="flex flex-col">
+                      <span className="pb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Full Name *
+                      </span>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder="e.g., John Doe"
+                        className="h-11 w-full rounded-lg border border-gray-300 bg-white p-3 text-sm font-normal leading-normal text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-0 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500"
+                        required
+                      />
+                    </label>
+                    
+                    <label className="flex flex-col">
+                      <span className="pb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Email Address *
+                      </span>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="e.g., john.doe@example.com"
+                        className="h-11 w-full rounded-lg border border-gray-300 bg-white p-3 text-sm font-normal leading-normal text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-0 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500"
+                        required
+                      />
+                    </label>
+                  </div>
+                  
+                  <label className="flex flex-col">
+                    <span className="pb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Subject *
+                    </span>
+                    <input
+                      type="text"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      placeholder="e.g., Project Inquiry"
+                      className="h-11 w-full rounded-lg border border-gray-300 bg-white p-3 text-sm font-normal leading-normal text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-0 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500"
+                      required
+                    />
+                  </label>
+                  
+                  <label className="flex flex-col">
+                    <span className="pb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Message *
+                    </span>
+                    <textarea
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      placeholder="Tell us about your project or idea..."
+                      rows="6"
+                      className="w-full resize-y rounded-lg border border-gray-300 bg-white p-3 text-sm font-normal leading-normal text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:outline-0 focus:ring-2 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder:text-gray-500"
+                      required
+                    />
+                  </label>
+                  
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`flex h-11 w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg px-6 text-sm font-bold text-white transition-all duration-300 ${
+                      isSubmitting 
+                        ? 'bg-gray-400 cursor-not-allowed' 
+                        : 'bg-blue-600 hover:bg-blue-700 transform hover:scale-105'
+                    }`}
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        Sending...
+                      </div>
+                    ) : (
+                      'Send Message'
+                    )}
+                  </button>
+                </form>
+              </div>
+
+              {/* Google Map */}
+              <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-700 dark:bg-gray-900">
+                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
+                  Find Us
+                </h3>
+                <div className="h-80 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 relative">
+                  {!mapLoaded && !mapError && (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="text-center">
+                        <div className="w-8 h-8 border-3 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                        <p className="text-sm text-gray-500">Loading map...</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {mapError && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-red-50 dark:bg-red-900/10">
+                      <div className="text-center p-4">
+                        <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                          <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                          </svg>
+                        </div>
+                        <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                          Map Loading Failed
+                        </h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 max-w-sm">
+                          We couldn't load the Google Maps. This might be due to network issues or API restrictions.
+                        </p>
+                        <button
+                          onClick={retryMapLoad}
+                          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                        >
+                          Retry Loading Map
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div 
+                    id="google-map" 
+                    className={`w-full h-full ${!mapLoaded || mapError ? 'opacity-0' : 'opacity-100'}`}
+                  ></div>
                 </div>
-                
-                <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-                  <p className="text-xs text-yellow-700 dark:text-yellow-300">
-                    💡 <strong>Pro Tip:</strong> For urgent matters, WhatsApp is the fastest way to reach us!
-                  </p>
+                <div className="mt-4 text-sm text-gray-600 dark:text-gray-400">
+                  <p>📍 BANGLADESH, Chattogram,Oxyegn</p>
+                  <p className="mt-1">We're located in the heart of the city, easily accessible from all major transportation hubs.</p>
                 </div>
               </div>
             </div>
