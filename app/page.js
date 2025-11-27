@@ -1,10 +1,8 @@
-// app/page.js - FIXED VERSION
+// app/page.js - SEO Optimized Homepage
 'use client';
-import { lazy, Suspense, useEffect, useState, useRef } from 'react'; // Added useRef here
+import { lazy, Suspense, useEffect, useState, useRef } from 'react';
 import Header from '@/components/Header';
 import Hero from '@/components/Hero';
-
-// Immediate imports for critical components
 import TechStack from '@/components/TechStack';
 
 // Lazy imports with preloading
@@ -29,7 +27,7 @@ const OptimizedLoader = ({ minHeight = "h-40" }) => (
 // Intersection-based loading component
 const LazySection = ({ children, componentName, minHeight = "min-h-[400px]" }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef(null); // This was causing the error - now useRef is imported
+  const ref = useRef(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -39,7 +37,10 @@ const LazySection = ({ children, componentName, minHeight = "min-h-[400px]" }) =
           observer.disconnect();
         }
       },
-      { threshold: 0.1 }
+      { 
+        threshold: 0.1,
+        rootMargin: '50px' 
+      }
     );
 
     if (ref.current) {
@@ -57,66 +58,87 @@ const LazySection = ({ children, componentName, minHeight = "min-h-[400px]" }) =
 };
 
 export default function Home() {
+  // Add JSON-LD for homepage
+  const homepageSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "SoftrevoX - Your Partner for Innovative IT Solutions",
+    "description": "Transform your ideas into powerful digital products with SoftrevoX expertise in modern web technologies.",
+    "url": "https://softrevox.com",
+    "mainEntity": {
+      "@type": "Organization",
+      "name": "SoftrevoX"
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
-      {/* Critical components - loaded immediately */}
-      <Header />
+    <>
+      {/* Structured Data for Homepage */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homepageSchema) }}
+      />
       
-      <main>
-        {/* Above the fold - critical for SEO and user experience */}
-        <Hero />
-        <TechStack />
+      <div className="min-h-screen bg-white dark:bg-gray-900">
+        {/* Critical components - loaded immediately */}
+        <Header />
         
-        {/* Lazy loaded sections with intersection observer */}
-        <LazySection componentName="Why Choose Us">
-          <Suspense fallback={<OptimizedLoader minHeight="min-h-[400px]" />}>
-            <WhyChooseUs />
-          </Suspense>
-        </LazySection>
+        <main>
+          {/* Above the fold - critical for SEO and user experience */}
+          <Hero />
+          <TechStack />
+          
+          {/* Lazy loaded sections with intersection observer */}
+          <LazySection componentName="Why Choose Us">
+            <Suspense fallback={<OptimizedLoader minHeight="min-h-[400px]" />}>
+              <WhyChooseUs />
+            </Suspense>
+          </LazySection>
+          
+          <LazySection componentName="Our Process">
+            <Suspense fallback={<OptimizedLoader minHeight="min-h-[400px]" />}>
+              <WorkflowProcess />
+            </Suspense>
+          </LazySection>
+          
+          <LazySection componentName="Services">
+            <Suspense fallback={<OptimizedLoader minHeight="min-h-[400px]" />}>
+              <Services />
+            </Suspense>
+          </LazySection>
+          
+          <LazySection componentName="Projects">
+            <Suspense fallback={<OptimizedLoader minHeight="min-h-[400px]" />}>
+              <Projects />
+            </Suspense>
+          </LazySection>
+          
+          <LazySection componentName="Testimonials">
+            <Suspense fallback={<OptimizedLoader minHeight="min-h-[400px]" />}>
+              <Testimonials />
+            </Suspense>
+          </LazySection>
+          
+          <LazySection componentName="Contact">
+            <Suspense fallback={<OptimizedLoader minHeight="min-h-[400px]" />}>
+              <Contact />
+            </Suspense>
+          </LazySection>
+        </main>
         
-        <LazySection componentName="Our Process">
-          <Suspense fallback={<OptimizedLoader minHeight="min-h-[400px]" />}>
-            <WorkflowProcess />
-          </Suspense>
-        </LazySection>
-        
-        <LazySection componentName="Services">
-          <Suspense fallback={<OptimizedLoader minHeight="min-h-[400px]" />}>
-            <Services />
-          </Suspense>
-        </LazySection>
-        
-        <LazySection componentName="Projects">
-          <Suspense fallback={<OptimizedLoader minHeight="min-h-[400px]" />}>
-            <Projects />
-          </Suspense>
-        </LazySection>
-        
-        <LazySection componentName="Testimonials">
-          <Suspense fallback={<OptimizedLoader minHeight="min-h-[400px]" />}>
-            <Testimonials />
-          </Suspense>
-        </LazySection>
-        
-        <LazySection componentName="Contact">
-          <Suspense fallback={<OptimizedLoader minHeight="min-h-[400px]" />}>
-            <Contact />
-          </Suspense>
-        </LazySection>
-      </main>
-      
-      {/* Footer - lazy loaded but important for layout */}
-      <Suspense fallback={
-        <footer className="w-full border-t border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 py-8">
-          <div className="container mx-auto max-w-7xl px-4">
-            <div className="flex justify-between items-center">
-              <div className="text-gray-600 dark:text-gray-400">Loading...</div>
+        {/* Footer - lazy loaded but important for layout */}
+        <Suspense fallback={
+          <footer className="w-full border-t border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 py-8">
+            <div className="container mx-auto max-w-7xl px-4">
+              <div className="flex justify-between items-center">
+                <div className="text-gray-600 dark:text-gray-400">Loading...</div>
+              </div>
             </div>
-          </div>
-        </footer>
-      }>
-        <Footer />
-      </Suspense>
-    </div>
+          </footer>
+        }>
+          <Footer />
+        </Suspense>
+      </div>
+    </>
   );
 }

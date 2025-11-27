@@ -1,0 +1,16 @@
+// app/robots.txt/route.js
+export function GET() {
+  const robots = `
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://softrevox.com/sitemap.xml
+  `.trim();
+
+  return new Response(robots, {
+    headers: {
+      'Content-Type': 'text/plain',
+    },
+  });
+}
