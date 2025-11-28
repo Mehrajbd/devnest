@@ -198,7 +198,7 @@ export default function Hero() {
             {/* Stats Grid - Improved mobile layout */}
             <div className="grid grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-md">
               {[
-                { number: '150+', label: 'Projects Delivered' },
+                { number: '5+', label: 'Projects Delivered' },
                 { number: '99%', label: 'Client Satisfaction' },
                 { number: '24/7', label: 'AI Support' },
               ].map((stat) => (
@@ -294,10 +294,11 @@ export default function Hero() {
 
                         {/* Company Name */}
                         <div className="mt-2 sm:mt-4">
-                          <span className="text-sm sm:text-base md:text-lg font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                            Your Partner with IT Solution
-                          </span>
-                        </div>
+  <span className="text-sm sm:text-base md:text-lg font-bold text-white">
+    Your Partner with IT Solution
+  </span>
+</div>
+
                       </div>
                     </div>
                   </div>
