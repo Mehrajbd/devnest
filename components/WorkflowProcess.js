@@ -3,7 +3,6 @@
 
 import { useRef, useState, useEffect } from 'react';
 
-
 export default function WorkflowProcess() {
   const [isVisible, setIsVisible] = useState(false);
   const [activeStep, setActiveStep] = useState(0);
@@ -60,7 +59,7 @@ export default function WorkflowProcess() {
     }
   ];
 
-  // SVG Icons
+  /* ========= SVG ICONS ========= */
   function DiscoveryIcon({ className = "w-6 h-6" }) {
     return (
       <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,25 +108,20 @@ export default function WorkflowProcess() {
     );
   }
 
-  // Intersection Observer
+  /* ========= INTERSECTION OBSERVER ========= */
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
+        if (entry.isIntersecting) setIsVisible(true);
       },
       { threshold: 0.1 }
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
+    if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, []);
 
-  // Auto-rotate steps
+  /* ========= AUTO ROTATE STEPS ========= */
   useEffect(() => {
     if (isVisible) {
       const interval = setInterval(() => {
@@ -138,194 +132,154 @@ export default function WorkflowProcess() {
   }, [isVisible, processSteps.length]);
 
   return (
-    <section 
+    <section
       ref={sectionRef}
-      className="relative py-24 bg-gradient-to-br from-slate-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900/5 overflow-hidden"
+      className="relative py-24 bg-gradient-to-br from-slate-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900/5"
       id="workflow-process"
     >
-      {/* Animated Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
-        <div className="absolute top-10 left-10 w-64 h-64 bg-blue-200 dark:bg-blue-900/20 rounded-full filter blur-3xl opacity-20 animate-float-slow"></div>
-        <div className="absolute bottom-10 right-10 w-80 h-80 bg-purple-200 dark:bg-purple-900/20 rounded-full filter blur-3xl opacity-20 animate-float-slow delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-cyan-200 dark:bg-cyan-900/10 rounded-full filter blur-3xl opacity-10 animate-float-slow delay-4000"></div>
-      </div>
 
+      {/* HEADER */}
       <div className="container mx-auto max-w-7xl px-4 relative z-10">
-        
-        {/* Section Header */}
         <div className="text-center mb-20">
-          <div className="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-lg mb-8">
-            <div className="flex space-x-1">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse delay-300"></div>
-              <div className="w-2 h-2 bg-cyan-500 rounded-full animate-pulse delay-700"></div>
-            </div>
-            <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Our Process</span>
-          </div>
-          
           <h2 className="text-5xl md:text-6xl font-black text-gray-900 dark:text-white mb-6 leading-tight">
             Our <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">Workflow</span> Process
           </h2>
-          
-          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto leading-relaxed font-light">
-            A structured, transparent process that ensures quality, efficiency, and successful project delivery every time.
+          <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto">
+            A structured, transparent process that ensures quality, efficiency, and successful project delivery.
           </p>
         </div>
 
-        {/* Process Timeline - Desktop */}
+        {/* ---------- DESKTOP VIEW ---------- */}
         <div className="hidden lg:block mb-20">
-          {/* Timeline Connector */}
           <div className="relative mb-16">
-            <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 rounded-full opacity-20"></div>
-            <div 
-              className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-1000 ease-out"
+            <div className="absolute left-0 right-0 top-1/2 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 opacity-20"></div>
+            <div
+              className="absolute left-0 top-1/2 h-1 bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500"
               style={{ width: `${(activeStep / (processSteps.length - 1)) * 100}%` }}
             ></div>
           </div>
 
-          {/* Process Steps */}
-          <div className="grid grid-cols-6 gap-8 relative">
+          <div className="grid grid-cols-6 gap-8">
             {processSteps.map((step, index) => {
-              const IconComponent = step.icon;
-              const isActive = index === activeStep;
+              const Icon = step.icon;
+              const isActive = activeStep === index;
               const isCompleted = index < activeStep;
-              
+
               return (
                 <div
                   key={step.number}
-                  className={`relative group cursor-pointer transition-all duration-500 ${
-                    isActive ? 'scale-110' : 'scale-100'
-                  }`}
+                  className={`relative transition-all cursor-pointer ${isActive ? 'scale-110' : 'scale-100'}`}
                   onMouseEnter={() => setActiveStep(index)}
                 >
-                  {/* Step Connector Dots */}
-                  <div className="absolute -top-16 left-1/2 transform -translate-x-1/2">
-                    <div className={`w-4 h-4 rounded-full border-4 transition-all duration-500 ${
-                      isCompleted 
-                        ? `bg-gradient-to-r ${step.color} border-white dark:border-gray-800 scale-125` 
-                        : isActive 
-                        ? `bg-white border-4 border-blue-500 scale-125 shadow-lg` 
-                        : 'bg-gray-300 border-white dark:bg-gray-600 dark:border-gray-800'
-                    }`}></div>
+                  {/* Top dot */}
+                  <div className="absolute -top-16 left-1/2 -translate-x-1/2">
+                    <div
+                      className={`w-4 h-4 rounded-full border-4 transition-all ${
+                        isCompleted
+                          ? `bg-gradient-to-r ${step.color} border-white`
+                          : isActive
+                          ? 'bg-white border-blue-500'
+                          : 'bg-gray-300'
+                      }`}
+                    ></div>
                   </div>
 
-                  {/* Step Card */}
-                  <div className={`relative rounded-2xl p-6 transition-all duration-500 ${
-                    isActive 
-                      ? 'bg-white dark:bg-gray-800 shadow-2xl transform -translate-y-4' 
-                      : 'bg-white/50 dark:bg-gray-800/50 shadow-lg'
-                  }`}>
-                    {/* Step Number */}
-                    <div className={`text-2xl font-black mb-4 transition-all duration-500 ${
-                      isActive ? `bg-gradient-to-r ${step.color} bg-clip-text text-transparent` : 'text-gray-400'
-                    }`}>
+                  {/* Card */}
+                  <div
+                    className={`rounded-2xl p-6 transition-all ${
+                      isActive ? 'bg-white dark:bg-gray-800 shadow-xl -translate-y-4' : 'bg-white/50 dark:bg-gray-800/50'
+                    }`}
+                  >
+                    <div
+                      className={`text-2xl font-black mb-4 ${
+                        isActive ? `bg-gradient-to-r ${step.color} bg-clip-text text-transparent` : 'text-gray-400'
+                      }`}
+                    >
                       {step.number}
                     </div>
 
-                    {/* Icon */}
-                    <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 transition-all duration-500 ${
-                      isActive 
-                        ? `bg-gradient-to-r ${step.color} text-white shadow-lg scale-110` 
-                        : 'bg-gray-100 dark:bg-gray-700 text-gray-500'
-                    }`}>
-                      <IconComponent className="w-8 h-8" />
+                    <div
+                      className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all ${
+                        isActive
+                          ? `bg-gradient-to-r ${step.color} text-white shadow-lg`
+                          : 'bg-gray-200 text-gray-600'
+                      }`}
+                    >
+                      <Icon className="w-8 h-8" />
                     </div>
 
-                    {/* Title */}
-                    <h3 className={`text-xl font-bold mb-3 transition-all duration-500 ${
-                      isActive ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400'
-                    }`}>
+                    <h3 className={`text-xl font-bold mb-3 ${isActive ? 'text-gray-900 dark:text-white' : 'text-gray-600'}`}>
                       {step.title}
                     </h3>
 
-                    {/* Description */}
-                    <p className={`text-sm leading-relaxed transition-all duration-500 ${
-                      isActive ? 'text-gray-600 dark:text-gray-300' : 'text-gray-500 dark:text-gray-500'
-                    }`}>
+                    <p className={`text-sm mb-4 ${isActive ? 'text-gray-600 dark:text-gray-300' : 'text-gray-500'}`}>
                       {step.description}
                     </p>
 
-                    {/* Features List */}
-                    <div className={`mt-4 space-y-2 transition-all duration-500 ${
-                      isActive ? 'opacity-100 max-h-40' : 'opacity-0 max-h-0 overflow-hidden'
-                    }`}>
-                      {step.features.map((feature, featureIndex) => (
-                        <div 
-                          key={feature}
-                          className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400"
-                          style={{ transitionDelay: `${featureIndex * 100}ms` }}
-                        >
+                    {/* Features */}
+                    <div className={`${isActive ? 'opacity-100 max-h-40' : 'opacity-0 max-h-0 overflow-hidden'} transition-all`}>
+                      {step.features.map((feature) => (
+                        <div key={feature} className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                           <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${step.color}`}></div>
                           {feature}
                         </div>
                       ))}
                     </div>
                   </div>
+
                 </div>
               );
             })}
           </div>
         </div>
 
-        {/* Process Steps - Mobile & Tablet */}
+        {/* ---------- MOBILE VIEW ---------- */}
         <div className="lg:hidden space-y-8 mb-16">
           {processSteps.map((step, index) => {
-            const IconComponent = step.icon;
-            const isActive = index === activeStep;
-            
+            const Icon = step.icon;
+            const isActive = activeStep === index;
+
             return (
               <div
                 key={step.number}
-                className={`relative group rounded-2xl p-6 transition-all duration-500 ${
-                  isActive 
-                    ? 'bg-white dark:bg-gray-800 shadow-2xl border-2 border-blue-500' 
-                    : 'bg-white/50 dark:bg-gray-800/50 shadow-lg border-2 border-transparent'
+                className={`rounded-2xl p-6 transition-all ${
+                  isActive ? 'bg-white dark:bg-gray-800 shadow-xl border-2 border-blue-500' : 'bg-white/50 dark:bg-gray-800/50'
                 }`}
                 onClick={() => setActiveStep(index)}
               >
-                {/* Step Header */}
                 <div className="flex items-center gap-4 mb-4">
-                  <div className={`flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-500 ${
-                    isActive 
-                      ? `bg-gradient-to-r ${step.color} text-white` 
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-500'
-                  }`}>
-                    <IconComponent className="w-6 h-6" />
+                  <div
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                      isActive ? `bg-gradient-to-r ${step.color} text-white` : 'bg-gray-200 text-gray-600'
+                    }`}
+                  >
+                    <Icon className="w-6 h-6" />
                   </div>
-                  
+
                   <div className="flex-1">
-                    <div className={`text-lg font-black transition-all duration-500 ${
-                      isActive ? `bg-gradient-to-r ${step.color} bg-clip-text text-transparent` : 'text-gray-400'
-                    }`}>
+                    <p
+                      className={`text-lg font-black ${
+                        isActive ? `bg-gradient-to-r ${step.color} bg-clip-text text-transparent` : 'text-gray-400'
+                      }`}
+                    >
                       {step.number}
-                    </div>
-                    <h3 className={`text-lg font-bold transition-all duration-500 ${
-                      isActive ? 'text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-400'
-                    }`}>
+                    </p>
+
+                    <h3 className={`text-lg font-bold ${isActive ? 'text-gray-900 dark:text-white' : 'text-gray-600'}`}>
                       {step.title}
                     </h3>
                   </div>
-                  
-                  <div className={`w-3 h-3 rounded-full transition-all duration-500 ${
-                    isActive ? `bg-gradient-to-r ${step.color}` : 'bg-gray-300 dark:bg-gray-600'
-                  }`}></div>
                 </div>
 
-                {/* Description */}
-                <p className={`text-sm leading-relaxed mb-4 transition-all duration-500 ${
-                  isActive ? 'text-gray-600 dark:text-gray-300' : 'text-gray-500 dark:text-gray-500'
-                }`}>
+                <p className={`text-sm mb-4 ${isActive ? 'text-gray-600 dark:text-gray-300' : 'text-gray-500'}`}>
                   {step.description}
                 </p>
 
-                {/* Features List */}
-                <div className={`grid grid-cols-2 gap-2 transition-all duration-500 ${
-                  isActive ? 'opacity-100 max-h-40' : 'opacity-0 max-h-0 overflow-hidden'
-                }`}>
-                  {step.features.map((feature) => (
-                    <div key={feature} className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                <div className={`grid grid-cols-2 gap-2 transition-all ${isActive ? 'opacity-100' : 'opacity-0 max-h-0 overflow-hidden'}`}>
+                  {step.features.map((feat) => (
+                    <div key={feat} className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-300">
                       <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${step.color}`}></div>
-                      {feature}
+                      {feat}
                     </div>
                   ))}
                 </div>
@@ -334,66 +288,41 @@ export default function WorkflowProcess() {
           })}
         </div>
 
-        {/* Process Navigation */}
+        {/* NAVIGATION BUTTONS */}
         <div className="flex justify-center items-center gap-4 mb-12">
-          <button 
-            onClick={() => setActiveStep(prev => Math.max(0, prev - 1))}
-            className="p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          <button
             disabled={activeStep === 0}
+            onClick={() => setActiveStep((prev) => Math.max(0, prev - 1))}
+            className="p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg border dark:border-gray-700 disabled:opacity-40"
           >
-            <svg className="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-          
+
           <div className="flex gap-2">
-            {processSteps.map((_, index) => (
+            {processSteps.map((_, i) => (
               <button
-                key={index}
-                onClick={() => setActiveStep(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === activeStep 
-                    ? 'bg-blue-500 scale-125' 
-                    : index < activeStep 
-                    ? 'bg-green-500' 
-                    : 'bg-gray-300 dark:bg-gray-600'
+                key={i}
+                onClick={() => setActiveStep(i)}
+                className={`w-3 h-3 rounded-full ${
+                  i === activeStep ? 'bg-blue-500 scale-125' : i < activeStep ? 'bg-green-500' : 'bg-gray-300'
                 }`}
               />
             ))}
           </div>
-          
-          <button 
-            onClick={() => setActiveStep(prev => Math.min(processSteps.length - 1, prev + 1))}
-            className="p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+
+          <button
             disabled={activeStep === processSteps.length - 1}
+            onClick={() => setActiveStep((prev) => Math.min(processSteps.length - 1, prev + 1))}
+            className="p-3 rounded-xl bg-white dark:bg-gray-800 shadow-lg border dark:border-gray-700 disabled:opacity-40"
           >
-            <svg className="w-5 h-5 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
         </div>
 
-        {/* CTA Section */}
-        <div className="text-center">
-          <div className="inline-flex flex-col sm:flex-row items-center gap-8 bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-100 dark:border-gray-700 max-w-4xl mx-auto">
-            <div className="text-left">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                Ready to Start Your Project?
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Let's follow our proven process to bring your idea to life.
-              </p>
-            </div>
-            <div className="flex gap-4 flex-wrap justify-center">
-              <button className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transform hover:scale-105 transition-all duration-300 whitespace-nowrap">
-                Start Your Project
-              </button>
-              <button className="px-8 py-3 border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:border-blue-500 hover:bg-blue-500 hover:text-white transition-all duration-300 whitespace-nowrap">
-                Download Process PDF
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
